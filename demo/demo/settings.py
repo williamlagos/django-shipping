@@ -93,6 +93,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admin',
     'shipping',
+    'demo'
 ]
 
 LOGGING = {
