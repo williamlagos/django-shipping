@@ -4,3 +4,9 @@ from models import *
 admin.site.register(Spreaded)
 admin.site.register(Playable)
 admin.site.register(Spreadable)
+admin.site.register(Event)
+admin.site.register(Project)
+admin.site.register(Interest)
+admin.site.register(Movement)
+admin.site.register(Promoted)
+
