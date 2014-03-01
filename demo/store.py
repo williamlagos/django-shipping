@@ -6,18 +6,19 @@ from django.conf import settings
 from django.http import HttpResponse as response
 from django.http import HttpResponseRedirect as redirect
 from django.shortcuts import render
-from paypal.standard.forms import PayPalPaymentsForm
-from paypal.standard.ipn.signals import payment_was_successful
 from shipping import fretefacil,correios
 from datetime import datetime
 
-from socialize.models import Profile
 from shipping.models import Deliverable
-from efforia.views import *
-from efforia.main import Efforia
-from feedly.models import Basket
+from demo.views import *
+from main import Efforia
 from app import Images
-from models import Product
+
+try:
+    from paypal.standard.forms import PayPalPaymentsForm
+    from paypal.standard.ipn.signals import payment_was_successful
+except ImportError,e:
+    pass
 
 class Cancel(Efforia):
     def __init__(self): pass
@@ -114,13 +115,6 @@ class Deliveries(Efforia):
         u = self.current_user(request)
         Cart.objects.all().filter(user=u).delete()
         return self.redirect('/')
-
-class SpreadBasket(Basket):
-    def product(self,prodid):
-	# for p in basket: 
-        # quantity += p.quantity
-        # value += p.product.credit*p.quantity
-	pass
 
 class Store(Efforia):
     def __init__(self): pass

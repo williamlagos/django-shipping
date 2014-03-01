@@ -18,7 +18,6 @@
 #
 
 import httplib,urllib2,urllib,json,ast,time,random,mimetypes
-import oauth2 as oauth
 from datetime import datetime,timedelta,date
 from django.contrib.auth.models import User
 from django.shortcuts import render
@@ -27,11 +26,7 @@ from django.http import HttpResponse as response
 from django.http import HttpResponseRedirect as redirect
 from django.template import Context,Template
 
-from socialize.models import Profile
-from feedly.models import Page,user,superuser
-from feedly.feed import Mosaic
-
-class Efforia(Mosaic):
+class Efforia():
     def __init__(self): pass
     def verify_permissions(self,request):
         perm = 'super'
