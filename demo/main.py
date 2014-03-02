@@ -35,19 +35,19 @@ class Efforia():
         permissions = True if 'super' in perm else False
         return permissions
     def start(self,request):
-        if 'user' in request.session:
-            # Painel do usuario
-            u = user(request.session['user']); 
-            permissions = self.verify_permissions(request)
-            actions = settings.EFFORIA_ACTIONS; apps = []
-            for a in settings.EFFORIA_APPS: apps.append(actions[a])
-            return render(request,'interface.html',{'static_url':settings.STATIC_URL,
-                                                'user':user(request.session['user']),'perm':permissions,
-                                                'name':'%s %s' % (u.first_name,u.last_name),'apps':apps
-                                                },content_type='text/html')
+        #if 'user' in request.session:
+        # Painel do usuario
+        u = User.objects.filter(username='efforia')[0] 
+        permissions = self.verify_permissions(request)
+        actions = settings.EFFORIA_ACTIONS; apps = []
+        for a in settings.EFFORIA_APPS: apps.append(actions[a])
+        return render(request,'interface.html',{'static_url':settings.STATIC_URL,
+                                            'user':u,'perm':permissions,
+                                            'name':'%s %s' % (u.first_name,u.last_name),'apps':apps
+                                            },content_type='text/html')
         # Pagina inicial
         #p = list(Page.objects.filter(user=superuser()))
-        return render(request,'index.html',{'static_url':settings.STATIC_URL},content_type='text/html')
+        #return render(request,'index.html',{'static_url':settings.STATIC_URL},content_type='text/html')
     def external(self,request):
         u = self.current_user(request)
         sellables = Sellable.objects.filter(user=u)
