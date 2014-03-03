@@ -1,7 +1,7 @@
 #
-# This file is part of Efforia project.
+# This file is part of Efforia Open Source Initiative.
 #
-# Copyright (C) 2011-2013 William Oliveira de Lagos <william@efforia.com.br>
+# Copyright (C) 2011-2014 William Oliveira de Lagos <william@efforia.com.br>
 #
 # Efforia is free software: you can redistribute it and/or modify
 # it under the terms of the Lesser GNU General Public License as published by
@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Efforia. If not, see <http://www.gnu.org/licenses/>.
 #
+
 import sys,os
 
 sys.path.append(os.path.abspath('..'))
@@ -59,7 +60,6 @@ TEMPLATE_LOADERS = (
 TEMPLATE_CONTEXT_PROCESSORS = (
     'django.contrib.auth.context_processors.auth',
     'django.contrib.messages.context_processors.messages',
-    'social_auth.context_processors.social_auth_by_type_backends',
     'django.core.context_processors.i18n',
     'django.core.context_processors.request',
     'django.core.context_processors.media',
@@ -80,8 +80,7 @@ WSGI_APPLICATION = 'demo.wsgi.application'
 TEMPLATE_DIRS = [
     os.path.abspath('templates/control'),
     os.path.abspath('templates/context'),
-    os.path.abspath('templates/'),
-    os.path.abspath('static'),
+    os.path.abspath('templates'),
 ]
 
 INSTALLED_APPS = [
@@ -121,11 +120,6 @@ LOGGING = {
 }
 
 AUTHENTICATION_BACKENDS = (
-    'social_auth.backends.twitter.TwitterBackend',
-    'social_auth.backends.facebook.FacebookBackend',
-    'social_auth.backends.google.GoogleOAuth2Backend',
-    'social_auth.backends.contrib.github.GithubBackend',
-    'social_auth.backends.contrib.foursquare.FoursquareBackend',
     'django.contrib.auth.backends.ModelBackend',
 )
 
@@ -136,21 +130,24 @@ SOCIAL_AUTH_NONCE_SERVER_URL_LENGTH = 16
 SOCIAL_AUTH_ASSOCIATION_SERVER_URL_LENGTH = 16
 SOCIAL_AUTH_ASSOCIATION_HANDLE_LENGTH = 16
 
-LOGIN_URL          = '/efforia/participate'
+LOGIN_URL          = '/demo/participate'
 LOGIN_REDIRECT_URL = '/'
 LOGIN_ERROR_URL    = '/'
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 ANONYMOUS_USER_ID = -1
-AUTH_PROFILE_MODULE = 'efforia.Profile'
+AUTH_PROFILE_MODULE = 'demo.Profile'
 
-EFFORIA_APPS = ()
-EFFORIA_ACTIONS = {}
-EFFORIA_OBJS = {}
+EFFORIA_APPS = ['demo']
+EFFORIA_ACTIONS = {'demo':[]}
+EFFORIA_OBJS = {'demo':[]}
 EFFORIA_NAMES = {}
 EFFORIA_TOKENS = {}
 EFFORIA_URL = ''
 
 PAYPAL_RECEIVER_EMAIL = 'efforiaca@gmail.com'
+PAYPAL_NOTIFY_URL = ''
+PAYPAL_RETURN_URL = ''
+PAYPAL_CANCEL_RETURN = ''
 PAGSEGURO_EMAIL_COBRANCA = 'efforiaca@gmail.com'
 PAGSEGURO_TOKEN = ''

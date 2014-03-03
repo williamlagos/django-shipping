@@ -1,11 +1,7 @@
-from django.contrib import admin
-admin.autodiscover()
-
 from django.conf.urls import patterns,url,include
 
 urlpatterns = patterns('demo.views',    
-    (r'^$','efforia_main'),
-    (r'^admin/',include(admin.site.urls)),
+    (r'^$','main'),
     (r'^shipping/',include('shipping.urls')),
     (r'^spreadapp','init_spread'),
     (r'^products','store_main'),
@@ -22,24 +18,5 @@ urlpatterns = patterns('demo.views',
     (r'^contents','content'),
     (r'^expose','upload'),
     (r'^media','media'),
-    (r'^productimage','product_image'),
-    'promote.views',    
-    (r'^$','init_create'),
-    (r'^project','project_form'),
-    (r'^events/(?P<eventid>\d+)$','eventview'),
-    (r'^projects/(?P<projectid>\d+)$','project'),
-    (r'^promoted','promoted'),
-    (r'^eventid','eventid'),
-    (r'^projectform','main'),
-    (r'^backers','backers'),
-    (r'^movements','movements'),
-    (r'^promote','promote'),
-    (r'^linkproj','link'),
-    (r'^movement','movement'),
-    (r'^pledge','pledge'),
-    (r'^grab','grab'),
-    (r'^eventimage','event_image'),
-    (r'^event','eventview'),
-    (r'^enroll','enroll'),
-    (r'^calendar','event'),
+    (r'^productimage','product_image')
 )
