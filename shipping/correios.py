@@ -1,79 +1,207 @@
-import re,urllib2
-from BeautifulSoup import BeautifulSoup
+# -*- encoding: utf-8 -*-
+#
+# Copyright (c) 2010 Robson Silva - r@linux.com
+#
 
-class EncomendaRepository(object):
+import urllib
+from beautifulsoup import BeautifulStoneSoup as BSS
+
+FORMATOS = {
+    'PACOTE': 1,
+    'ROLO': 2,
+}
+
+SERVICOS = {
+    'PAC':'41106',
+    'SEDEX':'40010',
+    'SEDEX10':'40215',
+    'SEDEXHOJE':'40290',
+    'SEDEXCOBRAR':'40045',
+    'ALL': '41106,40010,40215,40290,40045',
+}
+
+class CorreiosShippingService(object):
+    def __init__(self, cep_origem='80050370'):
+        #ceps
+        self.cep_origem = cep_origem
+        self.cep_destino = None
         
-    def __init__(self):
-        from scraping import CorreiosWebsiteScraper
-        self.correios_website_scraper = CorreiosWebsiteScraper()
-    
-    def get(self, numero):
-        return self.correios_website_scraper.get_encomenda_info(numero)
+        #servicos
+        self.aviso_recebimento = 'N'
+        self.valor_declarado = 0
+        self.mao_propria = 'N'
+        self.servico = 'ALL'
 
-class Encomenda(object):
-    
-    def __init__(self, numero):
-        self.numero = numero
-        self.status = []
-    
-    def adicionar_status(self, status):
-        self.status.append(status)
-        self.status.sort(lambda x, y: 1 if x.data > y.data else -1)
-    
-    def ultimo_status_disponivel(self):
-        return self.status[len(self.status) - 1] if len(self.status) > 0 else None
+        #medidas
+        self.formato = 'PACOTE'
+        self.altura = 0
+        self.largura = 0
+        self.comprimento = 0
+        self.diametro = 0
+        self.peso = 0.3
 
-    def primeiro_status_disponivel(self):
-        return self.status[0] if len(self.status) > 0 else None
-
-class Status(object):
-    
-    def __init__(self, **kwargs):
-        self.data = kwargs.get('data')
-        self.local = kwargs.get('local')
-        self.situacao = kwargs.get('situacao')
-        self.detalhes = kwargs.get('detalhes')
-
-class Correios:
-    def __init__(self): pass
-
-class CorreiosWebsiteScraper(object):
-    
-    def __init__(self, http_client=urllib2):
-        self.url = 'http://websro.correios.com.br/sro_bin/txect01$.QueryList?P_ITEMCODE=&P_LINGUA=001&P_TESTE=&P_TIPO=001&P_COD_UNI='
-        self.http_client = http_client
+        #configs
+        self.empresa = '' #id da empresa, quando possui contrato
+        self.senha = ''   #senha
+        self.tipo = 'xml'
+        self.URL = 'http://ws.correios.com.br/calculador/CalcPrecoPrazo.aspx'
         
-    def get_encomenda_info(self, numero):
-        request = self.http_client.urlopen('%s%s' % (self.url, numero))
-        html = request.read()
-        request.close()
-        if html:
-            encomenda = Encomenda(numero)
-            [encomenda.adicionar_status(status) for status in self._get_all_status_from_html(html)]
-            return encomenda
-    
-    def _get_all_status_from_html(self, html):
-        html_info = re.search('.*(<table.*</TABLE>).*', html, re.S)
-	try:
-	        table = html_info.group(1)
-	except AttributeError,e:
-		return [-1]
+        self.response = None
+        self.hash = {}
+        self.results = {}
+        self.errors = {}
+
+    def __call__(self, cep_destino=None, servico=None,):
+        """
+        Call :)
+        """
+        if cep_destino:
+            self.cep_destino = cep_destino
+
+        # pega o codigo do servico p/ envio ao webservice
+        if servico and SERVICOS.has_key(servico):
+            self.servico = servico
         
-        soup = BeautifulSoup(table)
+        # valida medidas e pesos minimos
+        self._validate()
+
+        # prepara o hash para envio
+        self._build_hash()
+
+        # envia os parametros e recupera o retorno
+        self._request()
+
+        # processa o resultado
+        self._parse()
+
+
+    def _build_hash(self):
+        """
+        Cria hash com dados instanciados
+        """
+        h = self.hash
+        h['nCdEmpresa'] = self.empresa
+        h['sDsSenha'] = self.senha
+        h['strRetorno'] = self.tipo
+        h['sCdMaoPropria'] = self.mao_propria
+        h['nVlValorDeclarado'] = self.valor_declarado
+        h['sCdAvisoRecebimento'] = self.aviso_recebimento
+        h['nCdFormato'] = FORMATOS[self.formato]
+        h['sCepOrigem'] = self.cep_origem
+        h['sCepDestino'] = self.cep_destino
+        h['nCdServico'] = SERVICOS[self.servico]
+        h['nVlAltura'] = self.altura
+        h['nVlLargura'] = self.largura
+        h['nVlComprimento'] = self.comprimento
+        h['nVlDiametro'] = self.diametro
+        h['nVlPeso'] = self.peso
+        self.hash = h
+
+
+    def _validate(self):
+        """ Valida as medidas (apenas os minimos)
+        para calculo
+        """
+
+        peso_minimo = 0.3
+        if self.formato == 'ROLO':
+            comprimento_minimo = 18
+            diametro_minimo = 5
+            altura_minima = 0
+            largura_minima = 0
+        else:
+            comprimento_minimo = 16
+            diametro_minimo = 0
+            altura_minima = 2
+            largura_minima = 5
+
+        if self.diametro < diametro_minimo:
+            self.diametro = diametro_minimo
+
+        if self.altura < altura_minima:
+            self.altura = altura_minima
+
+        if self.comprimento < comprimento_minimo:
+            self.comprimento = comprimento_minimo
+
+        # altura nao pode ser maior que comprimento
+        if self.altura > self.comprimento:
+            self.altura = self.comprimento
+
+        if self.largura < largura_minima:
+            self.largura = largura_minima
+
+        # largura nao pode ser menor que 11cm quando o comprimento
+        # for menor que 25cm (apenas no formato PACOTE)
+        if self.formato == 'PACOTE' and self.largura < 11 \
+            and self.comprimento < 25:
+            self.largura = 11
+
+        if self.peso < peso_minimo:
+            self.peso = peso_minimo
+
+
+    def _request(self):
+        """ 
+        Realiza a requisicao ao webservice e recupera
+        o retorno
+        """
+        url = '%s?%s' %(self.URL, urllib.urlencode(self.hash))
+        self.response = urllib.urlopen(url).read()
+
+
+    def _parse(self):
+        """
+        Processa o xml retornado pelo webservice
+        utilizando o BeautifulSoup
+
+        Exemplo do retorno:
+            <cServico>
+                <Codigo>40045</Codigo>
+                <Valor>12,10</Valor>
+                <PrazoEntrega>1</PrazoEntrega>
+                <ValorMaoPropria>0,00</ValorMaoPropria>
+                <ValorAvisoRecebimento>0,00</ValorAvisoRecebimento>
+                <ValorValorDeclarado>1,00</ValorValorDeclarado>
+                <EntregaDomiciliar>S</EntregaDomiciliar>
+                <EntregaSabado>S</EntregaSabado>
+                <Erro>0</Erro>
+                <MsgErro></MsgErro>
+            </cServico>
+        """
+        self.xmltree = BSS(self.response, selfClosingTags=[],
+                    convertEntities=BSS.ALL_ENTITIES)
+
+        for result in self.xmltree('cservico'):
+            servico_id = result('codigo')[0].contents[0]
+            prazo = result('prazoentrega')[0].contents[0]
+            valor = result('valor')[0].contents[0]
+            erro = result('erro')[0].contents[0]
+            servico = [k for k in SERVICOS if SERVICOS[k] == servico_id][0]
+
+            #outras opcoes disponiveis no retorno:
+            #valor_mao_propria = result('valormaopropria')[0].contents[0]
+            #valor_aviso_recebimento = result('valoravisorecebimento')[0].contents[0]
+            #valor_valor_declarado = result('valorvalordeclarado')[0].contents[0]
+                        
+            if erro != u'0':
+                msgerro = result('msgerro')[0].contents[0]
+                self.errors[servico] = msgerro
+            else:
+                self.results[servico] = prazo, valor
+
+
+    def print_results(self):
+        """
+        Imprime o resultado no terminal
+        """
+        if self.results:
+            print 'Resultados:'
+            for k, v in self.results.iteritems():
+                prazo, valor = v
+                print '%s - %s dias - R$ %s' %(k, prazo, valor)
         
-        status = []
-        count = 0
-        for tr in soup.table:
-            if count > 4 and str(tr).strip() != '':
-                if re.match(r'\d{2}\/\d{2}\/\d{4} \d{2}:\d{2}', tr.contents[0].string):
-                    status.append(
-                            Status(data=unicode(tr.contents[0].string),
-                                    local=unicode(tr.contents[1].string),
-                                    situacao=unicode(tr.contents[2].font.string))
-                    )
-                else:
-                    status[len(status) - 1].detalhes = unicode(tr.contents[0].string)
-                    
-            count = count + 1
-        
-        return status
+        if self.errors:
+            print 'Erros:'
+            for k, v in self.errors.iteritems():
+                print '%s - %s' %(k, v)

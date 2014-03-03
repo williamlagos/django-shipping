@@ -4,7 +4,7 @@
 from urllib2 import Request,urlopen
 from xml.dom import minidom as dom
 
-class FreteFacil:
+class FreteFacilShippingService:
 	def create_deliverable(self,sender,receiver,width,height,length,weight):
 		if int(height) < 2: return 'Altura abaixo do mínimo (2cm).'
 		if int(width) < 11: return 'Largura abaixo do mínimo (11cm).'

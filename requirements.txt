@@ -1,2 +1,2 @@
-beautifulsoup==3.2.1
-django==1.6.1
+django==1.6.2
+django-crispy-forms==1.4.0
