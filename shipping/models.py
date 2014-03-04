@@ -25,6 +25,14 @@ from datetime import date
 
 locale = settings.LOCALE_DATE
 
+class DeliverableProperty(Model):
+    sku = CharField(default='',max_length=20)
+    postcode = CharField(default='',max_length=100)
+    height = IntegerField(default=1)
+    length = IntegerField(default=1)
+    width = IntegerField(default=1)
+    weight = IntegerField(default=10)
+
 class Deliverable(Model):
     name = CharField(default='((',max_length=50)
     user = ForeignKey(User,related_name='+')
