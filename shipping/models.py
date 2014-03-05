@@ -27,11 +27,10 @@ locale = settings.LOCALE_DATE
 
 class DeliverableProperty(Model):
     sku = CharField(default='',max_length=20)
-    postcode = CharField(default='',max_length=100)
-    height = IntegerField(default=1)
-    length = IntegerField(default=1)
-    width = IntegerField(default=1)
-    weight = IntegerField(default=10)
+    height = IntegerField(default=16)
+    length = IntegerField(default=16)
+    width = IntegerField(default=16)
+    weight = FloatField(default=0.1)
 
 class Deliverable(Model):
     name = CharField(default='((',max_length=50)
