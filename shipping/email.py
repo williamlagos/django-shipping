@@ -19,9 +19,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from django.conf.urls import patterns,url,include
+from django.http import HttpResponse as response
+from django.core.mail import send_mail
 
-urlpatterns = patterns('shipping.views',
-	("^$","main"),
-	("^mail","mail_send"),
-	)
+def send_invoice(request):
+	send_mail('Subject here', 'Here is the message.','contato@efforia.com.br',
+    ['william.lagos1@gmail.com'], fail_silently=False)
+	return response('E-mail sended.')
