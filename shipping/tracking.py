@@ -1,3 +1,5 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # This file is part of Efforia Open Source Initiative.
 #
@@ -16,8 +18,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
+
 
 import re,urllib2
 from beautifulsoup import BeautifulSoup

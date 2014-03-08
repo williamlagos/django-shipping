@@ -1,8 +1,9 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
 #
 # This file is part of Efforia Open Source Initiative.
 #
 # Copyright (C) 2011-2014 William Oliveira de Lagos <william@efforia.com.br>
-# Copyright (C) 2010 Robson Silva - r@linux.com
 #
 # Shipping is free software: you can redistribute it and/or modify
 # it under the terms of the Lesser GNU General Public License as published by
@@ -17,9 +18,6 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
 
 import urllib
 from beautifulsoup import BeautifulStoneSoup as BSS
