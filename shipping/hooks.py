@@ -32,7 +32,8 @@ from shipping.fretefacil import FreteFacilShippingService
 from shipping.models import DeliverableProperty
 
 def fretefacil_shipping_handler(request, form, order=None):
-    if request.session.get("free_shipping"): return
+    #if request.session.get("free_shipping"): return
+    print 'Frete'
     settings.use_editable()
     try: user_postcode = form.shipping_detail_postcode
     except AttributeError,e: user_postcode = settings.CLIENT_POSTCODE
@@ -41,7 +42,9 @@ def fretefacil_shipping_handler(request, form, order=None):
     delivery_value = 0.0
     if cart.has_items():
         for product in cart:
+            print product.sku
             properties = DeliverableProperty.objects.filter(sku=product.sku)
+            print properties
             if len(properties) > 0:
                 props = properties[0]
                 deliverable = shippingservice.create_deliverable(settings.STORE_POSTCODE,

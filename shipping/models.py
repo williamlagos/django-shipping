@@ -19,7 +19,6 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 from django.db.models import *
 from django.conf import settings
 from django.contrib.auth.models import User
