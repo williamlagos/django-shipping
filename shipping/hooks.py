@@ -25,9 +25,11 @@ try:
     from mezzanine.conf import settings
     from cartridge.shop.utils import set_shipping
     from cartridge.shop.models import Cart
+    from cartridge.shop.forms import OrderForm
 except ImportError,e:
     pass
 
+from shipping.codes import CorreiosCode
 from shipping.fretefacil import FreteFacilShippingService
 from shipping.models import DeliverableProperty
 
