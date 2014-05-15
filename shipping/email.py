@@ -19,10 +19,10 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.http import HttpResponse as response
+from django.core.mail import send_mail
 
-from django.conf.urls import patterns,url,include
-
-urlpatterns = patterns('shipping.views',
-	("^$","main"),
-	("^mail","mail_send"),
-	)
+def send_invoice(request):
+	send_mail('Subject here', 'Here is the message.','contato@efforia.com.br',
+    ['william.lagos1@gmail.com'], fail_silently=False)
+	return response('E-mail sended.')

@@ -19,10 +19,8 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
+from django.contrib import admin
+from models import *
 
-from django.conf.urls import patterns,url,include
-
-urlpatterns = patterns('shipping.views',
-	("^$","main"),
-	("^mail","mail_send"),
-	)
+admin.site.register(Deliverable)
+admin.site.register(DeliverableProperty)
