@@ -16,8 +16,8 @@ from shipping.models import DeliverableProperty
 def fretefacil_shipping_handler(request, form, order=None):
     if request.session.get("free_shipping"): return
     settings.use_editable()
-    if form is not None: user_postcode = form.shipping_detail_postcode
-    else: user_postcode = settings.CLIENT_POSTCODE
+    if form is not None: user_postcode = form.cleaned_data['shipping_detail_postcode']
+    else: user_postcode = settings.STORE_POSTCODE 
     shippingservice = FreteFacilShippingService()
     cart = Cart.objects.from_request(request)
     delivery_value = 0.0
