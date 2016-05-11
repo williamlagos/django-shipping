@@ -23,7 +23,7 @@ from django.db.models import *
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.template import Context,Template
-from datetime import date
+from django.utils.timezone import now
 
 locale = settings.LOCALE_DATE
 
@@ -44,7 +44,7 @@ class Deliverable(Model):
     width = IntegerField(default=1)
     weight = IntegerField(default=10)
     value = FloatField(default=0.0)
-    date = DateTimeField(default=date.today(),auto_now_add=True)
+    date = DateTimeField(default=now)
     def token(self): return self.name[:2]
     def name_trimmed(self): return self.name.split(';')[0][1:]
     def month(self): return locale[self.date.month-1]
