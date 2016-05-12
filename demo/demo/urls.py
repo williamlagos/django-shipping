@@ -1,22 +1,23 @@
 from django.conf.urls import patterns,url,include
+from demo.views import *
 
-urlpatterns = patterns('demo.views',    
-    (r'^$','main'),
-    (r'^shipping/',include('shipping.urls')),
-    (r'^spreadapp','init_spread'),
-    (r'^products','store_main'),
-    (r'^cancel','cancel'),
-    (r'^delivery','delivery'),
-    (r'^correios','mail'),
-    (r'^spreadable','spreadable'),
-    (r'^spreaded','spreaded'),
-    (r'^spreadspread','spreadspread'),
-    (r'^spread','main'),
-    (r'^playable','playable'),
-    (r'^images','image'),
-    (r'^image','imageview'),
-    (r'^contents','content'),
-    (r'^expose','upload'),
-    (r'^media','media'),
-    (r'^productimage','product_image')
-)
+urlpatterns = [
+    url(r'^$',main),
+    url(r'^shipping/',include('shipping.urls')),
+    url(r'^spreadapp',init_spread),
+    url(r'^products',store_main),
+    url(r'^cancel',cancel),
+    url(r'^delivery',delivery),
+    url(r'^correios',mail),
+    url(r'^spreadable',spreadable),
+    url(r'^spreaded',spreaded),
+    url(r'^spreadspread',spreadspread),
+    url(r'^spread',main),
+    url(r'^playable',playable),
+    url(r'^images',image),
+    url(r'^image',imageview),
+    url(r'^contents',content),
+    url(r'^expose',upload),
+    url(r'^media',media),
+    url(r'^productimage',product_image)
+]

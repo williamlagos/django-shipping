@@ -71,7 +71,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.doc.XViewMiddleware',
+    #'django.middleware.doc.XViewMiddleware',
     'django.middleware.common.CommonMiddleware',
 )
 
@@ -91,7 +91,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'crispy_forms', 
+    'crispy_forms',
     'shipping',
     'demo'
 ]
