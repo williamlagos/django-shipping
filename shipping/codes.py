@@ -138,7 +138,7 @@ class CorreiosCode():
                 'StartRow': '1',
                 'EndRow': '10'
             }
-        return self._parse_tabela(self._url_open(url, data).read())
+        return self._parse_tabela(self._url_open(url, data).read())[0]
 
 
     def _rvirtualurl(self,cep):
