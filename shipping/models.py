@@ -25,9 +25,9 @@ from django.contrib.auth.models import User
 from django.template import Context,Template
 from django.utils.timezone import now
 
-locale = settings.LOCALE_DATE
-
 class DeliverableProperty(Model):
+    class Meta:
+        verbose_name_plural = "Deliverable Properties"
     sku = CharField(default='',max_length=20)
     height = IntegerField(default=16)
     length = IntegerField(default=16)
@@ -47,4 +47,4 @@ class Deliverable(Model):
     date = DateTimeField(default=now)
     def token(self): return self.name[:2]
     def name_trimmed(self): return self.name.split(';')[0][1:]
-    def month(self): return locale[self.date.month-1]
+    def month(self): return date.strftime('%b')

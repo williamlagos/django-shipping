@@ -19,12 +19,9 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-
 from beautifulsoup import BeautifulSoup
-import cookielib
-import re
-import urllib
-import urllib2
+from xml.dom import minidom
+import cookielib,re,urllib,urllib2
 
 URL_CORREIOS = 'http://www.buscacep.correios.com.br/servicos/dnec/'
 
@@ -114,10 +111,7 @@ class CorreiosCode():
         html = self._url_open(url, data).read()
         return self._parse_faixa(html)
 
-    def consulta(self, endereco, primeiro=False,
-                 uf=None, localidade=None, tipo=None, numero=None):
-        """Consulta site e retorna lista de resultados"""
-
+    def _correiosurl(self,endereco,uf=None,localidade=None,tipo=None,numero=None):
         if uf is None:
             url = 'consultaEnderecoAction.do'
             data = {
@@ -144,11 +138,42 @@ class CorreiosCode():
                 'StartRow': '1',
                 'EndRow': '10'
             }
+        return self._parse_tabela(self._url_open(url, data).read())
 
-        h = self._url_open(url, data)
-        html = h.read()
 
-        if primeiro:
-            return self.detalhe()
+    def _rvirtualurl(self,cep):
+        url = 'http://cep.republicavirtual.com.br/web_cep.php?formato=' \
+              'xml&cep=%s' % str(cep)
+        dom = minidom.parse(urllib2.urlopen(url))
+
+        tags_name = ('uf',
+                     'cidade',
+                     'bairro',
+                     'tipo_logradouro',
+                     'logradouro',)
+
+        resultado = dom.getElementsByTagName('resultado')[0]
+        resultado = int(resultado.childNodes[0].data)
+        if resultado != 0:
+            return self._getdata(tags_name, dom)
         else:
-            return self._parse_tabela(html)
+            return {}
+
+    def _getdata(self, tags_name, dom):
+        dados = {}
+
+        for tag_name in tags_name:
+            try:
+                dados[tag_name] = dom.getElementsByTagName(tag_name)[0]
+                dados[tag_name] = dados[tag_name].childNodes[0].data
+            except:
+                dados[tag_name] = ''
+
+        return dados
+
+    def consulta(self, cep, correios=False, uf=None, localidade=None, tipo=None, numero=None):
+        """Consulta site e retorna lista de resultados"""
+        if correios:
+            return self._correiosurl(cep,uf,localidade,tipo,numero)
+        else:
+            return self._rvirtualurl(cep)
