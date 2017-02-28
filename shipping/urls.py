@@ -20,9 +20,10 @@
 #
 
 
-from django.conf.urls import patterns,url,include
+from django.conf.urls import url,include
+from shipping.views import *
 
-urlpatterns = patterns('shipping.views',
-	("^$","main"),
-	("^mail","mail_send"),
-	)
+urlpatterns = [
+	url("^$", main),
+	url("^mail", mail_send),
+]
