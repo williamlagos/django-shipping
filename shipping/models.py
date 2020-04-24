@@ -36,7 +36,7 @@ class DeliverableProperty(Model):
 
 class Deliverable(Model):
     name = CharField(default='((',max_length=50)
-    user = ForeignKey(User,related_name='+')
+    user = ForeignKey(User,related_name='+', on_delete=CASCADE)
     product = IntegerField(default=1)
     mail_code = CharField(default='',max_length=100)
     height = IntegerField(default=1)
