@@ -8,13 +8,14 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='django-ship',
-    version='0.2.5',
+    version='0.2.6',
     packages=['shipping'],
     include_package_data=True,
     license='LGPLv3 License',
     description='An app to use Post Office services in e-commerce built with Django.',
     long_description=README,
-    url='http://www.efforia.com.br/opensource/',
+    long_description_content_type='text/x-rst',
+    url='https://williamlagos.github.io/',
     author='William Oliveira de Lagos',
     author_email='william@efforia.com.br',
     classifiers=[

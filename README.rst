@@ -1,6 +1,6 @@
-=====
+========
 Shipping
-=====
+========
 
 Shipping is an app to use Post Office services for e-commerces built with Django.
 
