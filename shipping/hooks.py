@@ -26,7 +26,7 @@ try:
     from cartridge.shop.utils import set_shipping
     from cartridge.shop.models import Cart
     from cartridge.shop.forms import OrderForm
-except ImportError,e:
+except ImportError as e:
     pass
 
 from shipping.codes import CorreiosCode

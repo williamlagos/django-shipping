@@ -19,8 +19,8 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-import urllib
-from beautifulsoup import BeautifulStoneSoup as BSS
+import urllib.request, urllib.parse, urllib.error
+from bs4 import BeautifulStoneSoup as BSS
 
 FORMATOS = {
     'PACOTE': 1,
@@ -75,7 +75,7 @@ class CorreiosShippingService(object):
             self.cep_destino = cep_destino
 
         # pega o codigo do servico p/ envio ao webservice
-        if servico and SERVICOS.has_key(servico):
+        if servico and servico in SERVICOS:
             self.servico = servico
         
         # valida medidas e pesos minimos
@@ -162,8 +162,8 @@ class CorreiosShippingService(object):
         Realiza a requisicao ao webservice e recupera
         o retorno
         """
-        url = '%s?%s' %(self.URL, urllib.urlencode(self.hash))
-        self.response = urllib.urlopen(url).read()
+        url = '%s?%s' %(self.URL, urllib.parse.urlencode(self.hash))
+        self.response = urllib.request.urlopen(url).read()
 
 
     def _parse(self):
@@ -200,7 +200,7 @@ class CorreiosShippingService(object):
             #valor_aviso_recebimento = result('valoravisorecebimento')[0].contents[0]
             #valor_valor_declarado = result('valorvalordeclarado')[0].contents[0]
                         
-            if erro != u'0':
+            if erro != '0':
                 msgerro = result('msgerro')[0].contents[0]
                 self.errors[servico] = msgerro
             else:
@@ -212,12 +212,12 @@ class CorreiosShippingService(object):
         Imprime o resultado no terminal
         """
         if self.results:
-            print 'Resultados:'
-            for k, v in self.results.iteritems():
+            print('Resultados:')
+            for k, v in self.results.items():
                 prazo, valor = v
-                print '%s - %s dias - R$ %s' %(k, prazo, valor)
+                print('%s - %s dias - R$ %s' %(k, prazo, valor))
         
         if self.errors:
-            print 'Erros:'
-            for k, v in self.errors.iteritems():
-                print '%s - %s' %(k, v)
+            print('Erros:')
+            for k, v in self.errors.items():
+                print('%s - %s' %(k, v))
