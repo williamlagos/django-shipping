@@ -1,9 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
-# This file is part of Efforia Open Source Initiative.
+# This file is part of django-ship project.
 #
-# Copyright (C) 2011-2014 William Oliveira de Lagos <william@efforia.com.br>
+# Copyright (C) 2011-2020 William Oliveira de Lagos <william.lagos@icloud.com>
 #
 # Shipping is free software: you can redistribute it and/or modify
 # it under the terms of the Lesser GNU General Public License as published by
@@ -110,3 +109,56 @@ class Shipping():
         current_profile = Profile.objects.all().filter(user=u)[0]
         current_profile.points += points
         current_profile.save()
+
+class Mail(Correios):
+    def __init__(self): pass
+    def postal_code(self,request):
+        u = self.current_user(request)
+        s = ''; mail_code = request.GET['address']
+        q = self.consulta(mail_code)[0]
+        d = fretefacil.create_deliverable('91350-180',mail_code,'30','30','30','0.5')
+        value = fretefacil.delivery_value(d)
+        formatted = '<div>Valor do frete: R$ <div style="display:inline;" class="delivery">%s</div></div>' % value
+        for i in q.values(): s += '<div>%s\n</div>' % i
+        s += formatted
+        now,objs,rels = self.get_object_bydate(request.GET['object'],'$$')
+        obj = globals()[objs].objects.all().filter(date=now)[0]
+        deliverable = Deliverable(product=obj,buyer=u,mail_code=mail_code,code=d['sender'],receiver=d['receiver'],
+        height=int(d['height']),length=int(d['length']),width=int(d['width']),weight=int(float(d['weight'][0])*1000.0),value=value)
+        deliverable.save()
+        return response(s)
+
+class Deliveries():
+    def __init__(self): pass
+    def view_package(self,request):
+        u = self.current_user(request)
+        form = DeliveryForm()
+        form.fields['address'].label = 'CEP'
+        if 'quantity' in request.GET:
+            quantity = request.GET['quantity']
+            credit = int(request.GET['credit'])
+        else:
+            quantity = 1; credit = 1
+        paypal_dict = {
+            "business": settings.PAYPAL_RECEIVER_EMAIL,
+            "amount": "1.00",
+            "item_name": "Produto do Plethora",
+            "invoice": "unique-invoice-id",
+            "notify_url": "http://www.efforia.com.br/paypal",
+            "return_url": "http://www.efforia.com.br/delivery",
+            "cancel_return": "http://www.efforia.com.br/cancel",
+            'currency_code': 'BRL',
+            'quantity': quantity,
+        }
+        payments = PayPalPaymentsForm(initial=paypal_dict)
+        diff = credit-u.profile.credit
+        if diff < 0: diff = 0
+        return render(request,"delivery.pug",{
+                                               'payments':payments,
+                                               'credit':diff,
+                                               'form':form
+                                               },content_type='text/html')
+    def create_package(self,request):
+        u = self.current_user(request)
+        Cart.objects.all().filter(user=u).delete()
+        return self.redirect('/')

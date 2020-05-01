@@ -1,9 +1,8 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
-# This file is part of Efforia Open Source Initiative.
+# This file is part of django-ship project.
 #
-# Copyright (C) 2011-2014 William Oliveira de Lagos <william@efforia.com.br>
+# Copyright (C) 2011-2020 William Oliveira de Lagos <william.lagos@icloud.com>
 #
 # Shipping is free software: you can redistribute it and/or modify
 # it under the terms of the Lesser GNU General Public License as published by
@@ -19,11 +18,24 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from shipping.email import send_invoice
 from django.http import HttpResponse as response
+from shipping.email import send_invoice
+from shipping.core import Mail, Deliveries
 
 def main(request):
 	return response('Hello World!')
 
 def mail_send(request):
 	return send_invoice(request)
+
+def mail(request):
+    m = Mail()
+    if request.method == 'GET':
+        return m.postal_code(request)
+
+def delivery(request):
+    deliver = Deliveries()
+    if request.method == 'GET':
+        return deliver.view_package(request)
+    elif request.method == 'POST':
+        return deliver.create_package(request)
