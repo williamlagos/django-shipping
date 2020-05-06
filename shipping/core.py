@@ -110,7 +110,7 @@ class Shipping():
         current_profile.points += points
         current_profile.save()
 
-class Mail(Correios):
+class Mail():#(Correios):
     def __init__(self): pass
     def postal_code(self,request):
         u = self.current_user(request)

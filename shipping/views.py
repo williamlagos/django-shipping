@@ -19,8 +19,8 @@
 #
 
 from django.http import HttpResponse as response
-from shipping.email import send_invoice
-from shipping.core import Mail, Deliveries
+from .email import send_invoice
+from .core import Mail, Deliveries
 
 def main(request):
 	return response('Hello World!')
