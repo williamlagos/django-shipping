@@ -23,7 +23,11 @@ from django.urls import path
 
 from .views import *
 
+deliveries_patterns = ([
+	path('', DeliveriesView.as_view())
+], 'deliveries')
+
 urlpatterns = [
-	path('deliverables/', ShippingView.as_view()),
+	path('deliveries', include(deliveries_patterns)),
 	url("^mail", mail_send),
 ]

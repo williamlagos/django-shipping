@@ -25,9 +25,9 @@ from django.views import View
 from .email import send_invoice
 from .core import Mail, Deliveries
 
-class ShippingView(View):
+class DeliveriesView(View):
     def get(self, request):
-        return JsonResponse({'shipping': 'success'})
+        return JsonResponse({'deliveries': 'success'})
 
 def mail_send(request):
 	return send_invoice(request)
