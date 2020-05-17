@@ -25,5 +25,5 @@ from .views import *
 
 urlpatterns = [
 	path('', DeliveriesView.as_view()),
-	url("^mail", mail_send),
+	# url("^mail", mail_send),
 ]

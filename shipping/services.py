@@ -21,9 +21,19 @@
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.shortcuts import render
+from django.http import HttpResponse as response
+from django.core.mail import send_mail
 
-def user(name): return User.objects.filter(username=name)[0]
-def superuser(): return User.objects.filter(is_superuser=True)[0]
+def user(name): 
+    return User.objects.filter(username=name)[0]
+    
+def superuser(): 
+    return User.objects.filter(is_superuser=True)[0]
+
+def send_invoice(request):
+	send_mail('Subject here', 'Here is the message.','contato@efforia.com.br',
+    ['william.lagos1@gmail.com'], fail_silently=False)
+	return response('E-mail sended.')
 
 class Shipping():
     def __init__(self): pass
