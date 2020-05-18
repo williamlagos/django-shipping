@@ -26,7 +26,7 @@ from django.core.mail import send_mail
 
 def user(name): 
     return User.objects.filter(username=name)[0]
-    
+
 def superuser(): 
     return User.objects.filter(is_superuser=True)[0]
 
@@ -35,15 +35,19 @@ def send_invoice(request):
     ['william.lagos1@gmail.com'], fail_silently=False)
 	return response('E-mail sended.')
 
-class Shipping():
-    def __init__(self): pass
-    def verify_permissions(self,request):
+class ShippingService:
+
+    def __init__(self): 
+        pass
+
+    def verify_permissions(self, request):
         perm = 'super'
         if 'permissions' in request.COOKIES:
             perm = request.COOKIES['permissions']
         permissions = True if 'super' in perm else False
         return permissions
-    def start(self,request):
+
+    def start(self, request):
         # Painel do usuario
         u = user('efforia'); 
         permissions = self.verify_permissions(request)
@@ -56,24 +60,29 @@ class Shipping():
         # Pagina inicial
         #p = list(Page.objects.filter(user=superuser()))
         #return render(request,'index.html',{'static_url':settings.STATIC_URL},content_type='text/html')
-    def external(self,request):
+
+    def external(self, request):
         u = self.current_user(request)
         sellables = Sellable.objects.filter(user=u)
         for s in sellables: s.paid = True
         return self.redirect('/')
-    def profile_view(self,request,name):
+
+    def profile_view(self, request, name):
         if len(list(User.objects.filter(username=name))) > 0: request.session['user'] = name
         r = redirect('/')
         r.set_cookie('permissions','view_only')
         return r
-    def json_decode(self,string):
+
+    def json_decode(self, string):
         j = json.loads(string,'utf-8')
         return ast.literal_eval(j)
-    def url_request(self,url,data=None,headers={}):
+
+    def url_request(self, url, data=None, headers={}):
         request = urllib.request.Request(url=url,data=data,headers=headers)
         request_open = urllib.request.urlopen(request)
         return request_open.geturl()
-    def do_request(self,url,data=None,headers={}):
+
+    def do_request(self, url, data=None, headers={}):
         response = ''
         request = urllib.request.Request(url=url,data=data,headers=headers)
         try:
@@ -89,22 +98,27 @@ class Shipping():
             print(e.hdrs)
             print(e.fp)
         return response
-    def object_token(self,token):
+
+    def object_token(self, token):
         relations = settings.EFFORIA_TOKENS
         typobject = relations[token]
         return typobject
-    def object_byid(self,token,ident):
+
+    def object_byid(self, token, ident):
         obj = self.object_token(token)
         return globals()[obj].objects.filter(id=ident)[0]
-    def convert_datetime(self,date_value):
+
+    def convert_datetime(self, date_value):
         d = time.strptime(date_value,'%d/%m/%Y')
         return datetime.fromtimestamp(time.mktime(d))
-    def authenticate(self,username,password):
+
+    def authenticate(self, username, password):
         exists = User.objects.filter(username=username)
         if exists:
             if exists[0].check_password(password): 
                 return exists
         else: return None
+
     def authenticated(self):
         name = self.get_current_user()
         if not name: 
@@ -113,16 +127,17 @@ class Shipping():
             return False
         else:
             return True
-    def accumulate_points(self,points,request=None):
+
+    def accumulate_points(self, points,request=None):
         if request is None: u = self.current_user()
         else: u = self.current_user(request)
         current_profile = Profile.objects.all().filter(user=u)[0]
         current_profile.points += points
         current_profile.save()
 
-class Mail():#(Correios):
-    def __init__(self): pass
-    def postal_code(self,request):
+    # Correios class code
+
+    def postal_code(self, request):
         u = self.current_user(request)
         s = ''; mail_code = request.GET['address']
         q = self.consulta(mail_code)[0]
@@ -138,9 +153,9 @@ class Mail():#(Correios):
         deliverable.save()
         return response(s)
 
-class Deliveries():
-    def __init__(self): pass
-    def view_package(self,request):
+    # Deliveries class code
+
+    def view_package(self, request):
         u = self.current_user(request)
         form = DeliveryForm()
         form.fields['address'].label = 'CEP'
@@ -168,7 +183,8 @@ class Deliveries():
                                                'credit':diff,
                                                'form':form
                                                },content_type='text/html')
-    def create_package(self,request):
+
+    def create_package(self, request):
         u = self.current_user(request)
         Cart.objects.all().filter(user=u).delete()
         return self.redirect('/')
