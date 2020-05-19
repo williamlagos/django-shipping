@@ -24,6 +24,8 @@ from django.shortcuts import render
 from django.http import HttpResponse as response
 from django.core.mail import send_mail
 
+from .models import Deliverable
+
 def user(name): 
     return User.objects.filter(username=name)[0]
 
@@ -36,6 +38,8 @@ def send_invoice(request):
 	return response('E-mail sended.')
 
 class ShippingService:
+
+    model = Deliverable
 
     def __init__(self): 
         pass
@@ -188,3 +192,8 @@ class ShippingService:
         u = self.current_user(request)
         Cart.objects.all().filter(user=u).delete()
         return self.redirect('/')
+
+class RateService:
+    def calculate(self, data):
+        # TODO: Rebuild calculate logic
+        return {'success': 'calculated'}
