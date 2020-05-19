@@ -18,6 +18,9 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
+# default_app_config = 'shipping.apps.DefaultConfig'
+default_app_config = 'shipping.shipping.apps.DefaultConfig'
+
 from urllib.request import Request, urlopen
 from xml.dom import minidom as dom
 
