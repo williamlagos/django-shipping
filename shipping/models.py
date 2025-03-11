@@ -21,23 +21,25 @@
 from django.db.models import *
 from django.conf import settings
 from django.contrib.auth.models import User
-from django.template import Context,Template
+from django.template import Context, Template
 from django.utils.timezone import now
+
 
 class DeliverableProperty(Model):
     class Meta:
         verbose_name_plural = "Deliverable Properties"
-    sku = CharField(default='',max_length=20)
+    sku = CharField(default='', max_length=20)
     height = IntegerField(default=16)
     length = IntegerField(default=16)
     width = IntegerField(default=16)
     weight = FloatField(default=0.1)
 
+
 class Deliverable(Model):
-    name = CharField(default='((',max_length=50)
-    user = ForeignKey(User,related_name='+', on_delete=CASCADE)
+    name = CharField(default='((', max_length=50)
+    user = ForeignKey(User, related_name='+', on_delete=CASCADE)
     product = IntegerField(default=1)
-    mail_code = CharField(default='',max_length=100)
+    mail_code = CharField(default='', max_length=100)
     height = IntegerField(default=1)
     length = IntegerField(default=1)
     width = IntegerField(default=1)
@@ -47,3 +49,7 @@ class Deliverable(Model):
     def token(self): return self.name[:2]
     def name_trimmed(self): return self.name.split(';')[0][1:]
     def month(self): return date.strftime('%b')
+
+
+class Amount(Model):
+    coins = IntegerField(default=0)
