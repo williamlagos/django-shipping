@@ -18,12 +18,10 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from django.conf.urls import url,include
 from django.urls import path
 
-from .views import *
+from .views import DeliveriesView
 
 urlpatterns = [
-	path('', DeliveriesView.as_view()),
-	# url("^mail", mail_send),
+    path("", DeliveriesView.as_view()),
 ]

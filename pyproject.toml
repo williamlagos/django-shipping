@@ -1,0 +1,67 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "django-ship"
+version = "0.3.0"
+description = "An app to use Post Office services in e-commerce built with Django."
+readme = "README.rst"
+license = { text = "LGPLv3 License" }
+authors = [{ name = "William Oliveira de Lagos", email = "william.lagos@icloud.com" }]
+requires-python = ">=3.8"
+classifiers = [
+    "Environment :: Web Environment",
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
+]
+dependencies = [
+    "django>=3.2",
+    "django-crispy-forms>=1.9.0",
+]
+
+[project.urls]
+Homepage = "https://williamlagos.github.io/"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.1.0",
+    "pytest>=7.0",
+    "pytest-django>=4.5",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["shipping"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 88
+target-version = "py38"
+exclude = ["shipping/migrations/"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = [
+    "E501",  # line too long – XML/SOAP strings cannot be shortened
+    "F403",  # star imports in providers/__init__.py are intentional
+    "F401",  # unused imports – some are re-exported
+    "E402",  # module-level import not at top – default_app_config must precede imports
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
