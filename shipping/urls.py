@@ -20,8 +20,11 @@
 
 from django.urls import path
 
-from .views import DeliveriesView
+from .views import CartView, DeliveriesView, OrdersView, ProductsView
 
 urlpatterns = [
     path("", DeliveriesView.as_view()),
+    path("products/", ProductsView.as_view()),
+    path("cart/", CartView.as_view()),
+    path("orders/", OrdersView.as_view()),
 ]

@@ -21,15 +21,22 @@
 from urllib.request import Request, urlopen
 from xml.dom import minidom as dom
 
+from shipping.strings import (
+    FRETEFACIL_CANNOT_CALCULATE,
+    FRETEFACIL_HEIGHT_TOO_SMALL,
+    FRETEFACIL_LENGTH_TOO_SMALL,
+    FRETEFACIL_WIDTH_TOO_SMALL,
+)
+
 
 class FreteFacilShippingService:
     def create_deliverable(self, sender, receiver, width, height, length, weight):
         if int(height) < 2:
-            return "Altura abaixo do mínimo (2cm)."
+            return str(FRETEFACIL_HEIGHT_TOO_SMALL)
         if int(width) < 11:
-            return "Largura abaixo do mínimo (11cm)."
+            return str(FRETEFACIL_WIDTH_TOO_SMALL)
         if int(length) < 16:
-            return "Profundidade abaixo do mínimo (16cm)."
+            return str(FRETEFACIL_LENGTH_TOO_SMALL)
         deliverable = {
             "sender": sender,
             "receiver": receiver,
@@ -79,6 +86,6 @@ class FreteFacilShippingService:
             .wholeText
         )
         if "-2.0" in val:
-            return "Não foi possível calcular o frete."
+            return str(FRETEFACIL_CANNOT_CALCULATE)
         else:
             return f"{float(val):.2f}"

@@ -30,6 +30,7 @@ except ImportError:
 from shipping.models import DeliverableProperty
 from shipping.providers.correios import CorreiosCode, CorreiosShippingService
 from shipping.providers.fretefacil import FreteFacilShippingService
+from shipping.strings import CORREIOS_SERVICE_NAME, SHIPPING_SEDEX_LABEL
 
 
 def fretefacil_shipping_handler(request, form, order=None):
@@ -57,7 +58,7 @@ def fretefacil_shipping_handler(request, form, order=None):
                     props.weight,
                 )
                 delivery_value += float(shippingservice.delivery_value(deliverable))
-    set_shipping(request, _("Correios"), delivery_value)
+    set_shipping(request, CORREIOS_SERVICE_NAME, delivery_value)
 
 
 def correios_create_deliverable(
@@ -109,7 +110,7 @@ def sedex_shipping_handler(request, form, order=None):
                 delivery_value += float(
                     correios_delivery_value(shippingservice, deliverable)
                 )
-    set_shipping(request, _("Correios"), delivery_value)
+    set_shipping(request, CORREIOS_SERVICE_NAME, delivery_value)
 
 
 def shipping_payment_handler(request, order_form, order):
@@ -146,7 +147,7 @@ def shipping_payment_handler(request, order_form, order):
     if has_shipping:
         cart_items.append(
             {
-                "name": "Frete via SEDEX",
+                "name": SHIPPING_SEDEX_LABEL,
                 "sku": "1",
                 "price": f"{shipping:.2f}",
                 "currency": currency,

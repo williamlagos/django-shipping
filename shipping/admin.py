@@ -20,7 +20,22 @@
 
 from django.contrib import admin
 
-from .models import Deliverable, DeliverableProperty
+from .models import (
+    Cart,
+    CartItem,
+    Category,
+    Deliverable,
+    DeliverableProperty,
+    Order,
+    OrderItem,
+    Product,
+)
 
 admin.site.register(Deliverable)
 admin.site.register(DeliverableProperty)
+admin.site.register(Category)
+admin.site.register(Product)
+admin.site.register(Cart)
+admin.site.register(CartItem)
+admin.site.register(Order)
+admin.site.register(OrderItem)
