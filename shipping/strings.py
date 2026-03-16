@@ -36,3 +36,10 @@ FRETEFACIL_CANNOT_CALCULATE = _("Não foi possível calcular o frete.")
 SHIPPING_VALUE_LABEL = _("Valor do frete")
 SHIPPING_SEDEX_LABEL = _("Frete via SEDEX")
 SHIPPING_PRODUCT_NAME = _("Produto do Plethora")
+
+# Order status choices
+ORDER_STATUS_PENDING = _("Pendente")
+ORDER_STATUS_PAID = _("Pago")
+ORDER_STATUS_SHIPPED = _("Enviado")
+ORDER_STATUS_DELIVERED = _("Entregue")
+ORDER_STATUS_CANCELLED = _("Cancelado")
