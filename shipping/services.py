@@ -25,6 +25,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from .models import Deliverable
+from .strings import SHIPPING_PRODUCT_NAME, SHIPPING_VALUE_LABEL
 
 
 def user(name):
@@ -93,7 +94,7 @@ class ShippingService:
             "91350-180", mail_code, "30", "30", "30", "0.5"
         )
         value = fretefacil.delivery_value(d)
-        formatted = f'<div>Valor do frete: R$ <div style="display:inline;" class="delivery">{value}</div></div>'
+        formatted = f'<div>{SHIPPING_VALUE_LABEL}: R$ <div style="display:inline;" class="delivery">{value}</div></div>'
         for i in q.values():
             s += f"<div>{i}\n</div>"
         s += formatted
@@ -122,7 +123,7 @@ class ShippingService:
         paypal_dict = {
             "business": settings.PAYPAL_RECEIVER_EMAIL,
             "amount": "1.00",
-            "item_name": "Produto do Plethora",
+            "item_name": SHIPPING_PRODUCT_NAME,
             "invoice": "unique-invoice-id",
             "notify_url": "http://www.efforia.com.br/paypal",
             "return_url": "http://www.efforia.com.br/delivery",

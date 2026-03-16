@@ -30,6 +30,12 @@ try:
 except ImportError:
     BeautifulSoup = None
 
+from shipping.strings import (
+    CORREIOS_ERRORS_LABEL,
+    CORREIOS_INVALID_HTML,
+    CORREIOS_RESULTS_LABEL,
+)
+
 FORMATOS = {
     "PACOTE": 1,
     "ROLO": 2,
@@ -190,7 +196,7 @@ class CorreiosCode:
         elif len(ceps) in (3, 5):  # uf (+ uf) + cidade com cep único
             return ceps[-1]
         else:
-            raise ValueError("HTML recebido não é válido")
+            raise ValueError(CORREIOS_INVALID_HTML)
 
     def detalhe(self, posicao=0):
         """Retorna o detalhe de um CEP da última lista de resultados"""
@@ -445,12 +451,12 @@ class CorreiosShippingService:
     def print_results(self):
         """Imprime o resultado no terminal"""
         if self.results:
-            print("Resultados:")
+            print(CORREIOS_RESULTS_LABEL)
             for k, v in self.results.items():
                 prazo, valor = v
                 print(f"{k} - {prazo} dias - R$ {valor}")
 
         if self.errors:
-            print("Erros:")
+            print(CORREIOS_ERRORS_LABEL)
             for k, v in self.errors.items():
                 print(f"{k} - {v}")
