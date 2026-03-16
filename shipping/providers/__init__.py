@@ -18,6 +18,6 @@
 # along with Shipping. If not, see <http://www.gnu.org/licenses/>.
 #
 
-from .correios import *
-from .default import *
-from .fretefacil import *
+from .correios import *  # noqa: F401, F403
+from .default import *  # noqa: F401, F403
+from .fretefacil import *  # noqa: F401, F403

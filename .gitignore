@@ -35,3 +35,14 @@ db.sqlite3
 
 static/
 *.suo
+
+# uv
+.venv/
+uv.lock
+
+# ruff cache
+.ruff_cache/
+
+# pytest cache
+.pytest_cache/
+__pycache__/
